@@ -4,8 +4,8 @@ from datetime import datetime
 
 class Entidad(ABC):   # clase abstracta
     def __init__(self, id):
-        self._id = id
-        self._fecha_creacion = datetime.now()
+        self._id = id            # crea el ID 
+        self._fecha_creacion = datetime.now()  # crea la fecha 
 
     @abstractmethod
     def mostrar_info(self):

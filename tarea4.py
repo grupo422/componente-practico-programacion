@@ -56,3 +56,28 @@ class Servicio(Entidad):             # CLASE ABSTRACTA SERVICIO
     @abstractmethod
     def descripcion(self):
         pass
+    
+    # Servicios polimorfismo
+
+class Sala(Servicio):
+    def calcular_costo(self, duracion): # Se define el valor del costo con la duracion 
+        return self._tarifa_base * duracion
+
+    def descripcion(self):
+        return "Alquiler de sala"
+
+
+class Equipo(Servicio):
+    def calcular_costo(self, duracion):
+        return self._tarifa_base * duracion
+
+    def descripcion(self):
+        return "Alquiler de equipo"
+
+
+class Asesoria(Servicio):
+    def calcular_costo(self, duracion):
+        return (self._tarifa_base * duracion) * 1.2
+
+    def descripcion(self):
+        return "Servicio de asesoría"

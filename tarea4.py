@@ -61,23 +61,23 @@ class Servicio(Entidad):             # CLASE ABSTRACTA SERVICIO
 
 class Sala(Servicio):
     def calcular_costo(self, duracion): # Se define el valor del costo con la duracion 
-        return self._tarifa_base * duracion
+        return self._tarifa_base * duracion # Multiplica la tarifa base por el tiempo usado
+
+    def descripcion(self):  # Método que describe el tipo de servicio
+        return "Alquiler de sala"  # Retorna una descripción del servicio
+
+
+class Equipo(Servicio):  # Clase Equipo que también hereda de Servicio
+    def calcular_costo(self, duracion): # Método para calcular el costo del equipo
+        return self._tarifa_base * duracion # Calcula costo igual que Sala (tarifa * tiempo)
+ 
+    def descripcion(self):  # Método que describe el servicio
+        return "Alquiler de equipo" # Devuelve el tipo de servicio
+
+
+class Asesoria(Servicio):  # Clase Asesoria que hereda de Servicio
+    def calcular_costo(self, duracion):  # Método para calcular el costo de la asesoría
+        return (self._tarifa_base * duracion) * 1.2 # Calcula el costo y le aplica un recargo del 20% (multiplica por 1.2)
 
     def descripcion(self):
-        return "Alquiler de sala"
-
-
-class Equipo(Servicio):
-    def calcular_costo(self, duracion):
-        return self._tarifa_base * duracion
-
-    def descripcion(self):
-        return "Alquiler de equipo"
-
-
-class Asesoria(Servicio):
-    def calcular_costo(self, duracion):
-        return (self._tarifa_base * duracion) * 1.2
-
-    def descripcion(self):
-        return "Servicio de asesoría"
+        return "Servicio de asesoría" # Retorna el nombre del servicio

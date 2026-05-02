@@ -80,4 +80,50 @@ class Asesoria(Servicio):  # Clase Asesoria que hereda de Servicio
         return (self._tarifa_base * duracion) * 1.2 # Calcula el costo y le aplica un recargo del 20% (multiplica por 1.2)
 
     def descripcion(self):
-        return "Servicio de asesoría" # Retorna el nombre del servicio
+        return "Servicio de asesoría" # Retorna el nombre del serviciogi
+
+
+class Reserva:
+    def __init__(self, cliente, servicio, duracion_horas):
+        if duracion_horas <= 0:
+
+            raise ValueError("La duración debe ser mayor a cero")
+        
+        self._cliente = cliente
+        self._servicio = servicio
+        self._duracion_horas = duracion_horas
+        self._estado = "Pendiente"  # Estado inicial de la reserva
+        self._fecha_reserva = datetime.now()  # Fecha de creación de la reserva
+        self._costo_base = servicio.calcular_costo(duracion_horas) # Calcula el costo base usando el método del servicio
+        self.calcular_costo_total() # Calcula el costo total al crear la reserva
+    def calcular_costo_total(self):
+        return self._servicio.calcular_costo(self._duracion_horas) # Calcula el costo total usando el método del servicio
+    
+    def confirmar_reserva(self):
+        if self._estado != "Pendiente":
+            raise ValueError("Solo se pueden confirmar reservas pendientes")
+        self._estado = "Confirmada"  # Cambia el estado a confirmada
+        print(f"Reserva confirmada para {self._cliente.get_nombre()} - Costo Total: ${self.calcular_costo_total():.2f}")    
+
+
+  
+    def cancelar_reserva(self):
+        if self._estado != "Confirmada":
+            raise ValueError("Solo se pueden cancelar reservas confirmadas")
+        self._estado = "Cancelada"  # Cambia el estado a cancelada
+        print(f"Reserva cancelada para {self._cliente.get_nombre()}")  # Imprime mensaje de cancelación
+  
+    def procesar(self):
+        if self._estado != "Confirmada":
+            raise ValueError("Solo se pueden procesar reservas confirmadas")
+        self._estado = "Procesada"  # Cambia el estado a procesada
+        print(f"Reserva procesada para {self._cliente.get_nombre()} - Servicio: {self._servicio.descripcion()}")  # Imprime mensaje de procesamiento
+        
+    def mostrar_info(self):
+        return (f"Reserva para {self._cliente.get_nombre()} | Servicio: {self._servicio.descripcion()} | "
+                f"Duración: {self._duracion_horas} horas | Costo Total: ${self.calcular_costo_total():.2f} | "
+                f"Estado: {self._estado}")
+    
+
+        
+

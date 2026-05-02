@@ -80,7 +80,7 @@ class Asesoria(Servicio):  # Clase Asesoria que hereda de Servicio
         return (self._tarifa_base * duracion) * 1.2 # Calcula el costo y le aplica un recargo del 20% (multiplica por 1.2)
 
     def descripcion(self):
-        return "Servicio de asesoría" # Retorna el nombre del serviciogi
+        return "Servicio de asesoría" # Retorna el nombre del servicio
 
 
 class Reserva:

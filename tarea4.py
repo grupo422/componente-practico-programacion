@@ -1,6 +1,13 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 
+### logs 
+
+def reguistrar_log(mensaje):
+    with open("sistema_reservas.log", "a") as log_file:
+        log_file.write(f"{datetime.now()}: {mensaje}\n")
+
+        ##### clases abtractas
 
 class Entidad(ABC):   # clase abstracta
     def __init__(self, id):
@@ -13,8 +20,15 @@ class Entidad(ABC):   # clase abstracta
 
     def get_id(self):
         return self._id
+    
+    ### Excepciones personalizadas para manejo de errores en el sistema ###
 
+class sistemaError(Exception):pass
+class ReservaError(sistemaError):pass
+class ClienteError(sistemaError):pass
+class ServicioError(sistemaError):pass
 
+     ## clases abstractas y concretas para el sistema de reservas de servicios###
 
 class Cliente(Entidad):      # CLASE CLIENTE
     def __init__(self, id, nombre, email):
@@ -81,6 +95,8 @@ class Asesoria(Servicio):  # Clase Asesoria que hereda de Servicio
 
     def descripcion(self):
         return "Servicio de asesoría" # Retorna el nombre del servicio
+    
+    ### Clase Reserva que maneja las reservas de servicios ###
 
 
 class Reserva:
@@ -124,6 +140,71 @@ class Reserva:
                 f"Duración: {self._duracion_horas} horas | Costo Total: ${self.calcular_costo_total():.2f} | "
                 f"Estado: {self._estado}")
     
+    ## Clase principal del sistema de reservas ###
 
+    class app:
+        def __init__(self):
+            self._clientes = {}  # Diccionario para almacenar clientes por ID
+            self._servicios = {}  # Diccionario para almacenar servicios por ID
+            self._reservas = []  # Lista para almacenar reservas
+
+        def agregar_cliente(self, id, nombre, email): ### Método para agregar un cliente al sistema
+            if id in self._clientes:                  ### Verifica si el ID del cliente ya existe en el sistema
+                raise ClienteError("El cliente con este ID ya existe")   ## Si el ID ya existe, lanza una excepción personalizada ClienteError
+            cliente = Cliente(id, nombre, email)#### Crea una nueva instancia de Cliente con los datos proporcionados
+            self._clientes[id] = cliente  ### Agrega el cliente al diccionario de clientes usando su ID como clave
+            reguistrar_log(f"Cliente agregado: {cliente.mostrar_info()}")  # Log de cliente agregado
+
+        def agregar_servicio(self, id, nombre, tarifa_base, tipo): ### Método para agregar un servicio al sistema
+            if id in self._servicios:   ### Verifica si el ID del servicio ya existe en el sistema
+                raise ServicioError("El servicio con este ID ya existe") ### Si el ID ya existe, lanza una excepción personalizada ServicioError
+            if tipo == "Sala":  ### Dependiendo del tipo de servicio, crea una instancia de la clase correspondiente (Sala, Equipo o Asesoria)
+                servicio = Sala(id, nombre, tarifa_base)  ### Si el tipo es "Sala", crea una instancia de la clase Sala
+            elif tipo == "Equipo": ### Si el tipo es "Equipo", crea una instancia de la clase Equipo
+                servicio = Equipo(id, nombre, tarifa_base)  ### Si el tipo es "Asesoria", crea una instancia de la clase Asesoria
+            elif tipo == "Asesoria": ### Si el tipo es "Asesoria", crea una instancia de la clase Asesoria
+                servicio = Asesoria(id, nombre, tarifa_base)  ### Si el tipo de servicio no coincide con ninguno de los casos anteriores, lanza una excepción indicando que el tipo de servicio es inválido
+            else:
+                raise ValueError("Tipo de servicio inválido")    ### Si el tipo de servicio no coincide con ninguno de los casos anteriores, lanza una excepción indicando que el tipo de servicio es inválido
+            self._servicios[id] = servicio  ####    Agrega el servicio al diccionario de servicios usando su ID como clave
+            reguistrar_log(f"Servicio agregado: {servicio.descripcion()} - Tarifa Base: ${tarifa_base:.2f}")  # Log de servicio agregado
+
+            self . reservas = []  # Lista para almacenar reservas
+            self.crear_widgets(self)  # Método para crear la interfaz gráfica 
+
+        ### Método para crear la interfaz gráfica (Tkinter o PyQt5) ###
         
+        def crear_windegets(self):
+            pass  # Aquí se implementaría la creación de la interfaz gráfica usando Tkinter o PyQt5
 
+        # cliente
+        tk.label (self.root, text="ID Cliente:").grid(row=0, column=0)
+        self.nombre_cliente_entry = tk.Entry(self.root)
+        self.nombre_cliente_entry.grid(row=0, column=1)
+
+        tk.label(self.root, text="Email Cliente:").grid(row=1, column=0)
+        self.email_cliente_entry = tk.Entry(self.root)
+        self.email_cliente_entry.grid(row=1, column=1)
+
+        tk.Button(self.root, text="Agregar Cliente", command=self.agregar_cliente).grid(row=2, column=0, columnspan=2)
+
+        # servicio
+        tk.Label(self.root, text="ID Servicio:").grid(row=3, column=0)
+        self.id_servicio_entry = tk.StringVar(self.root)
+        self.id_servicio_entry.grid(row=3, column=1)
+
+        tk.Label(self.root, text="Nombre Servicio:").grid(row=4, column=0)
+        self.nombre_servicio_entry = tk.Entry(self.root)
+        self.nombre_servicio_entry.grid(row=4, column=1)
+
+        tk.Label(self.root, text="Tarifa Base:").grid(row=5, column=0)
+        self.tarifa_base_entry = tk.Entry(self.root)
+        self.tarifa_base_entry.grid(row=5, column=1)
+
+        tk.Label(self.root, text="Tipo Servicio:").grid(row=6, column=0)
+        self.tipo_servicio_entry = tk.Entry(self.root)
+        self.tipo_servicio_entry.grid(row=6, column=1)
+
+        tk.Button(self.root, text="Agregar Servicio", command=self.agregar_servicio).grid(row=7, column=0, columnspan=2)
+
+        # reserva

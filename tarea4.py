@@ -3,7 +3,7 @@ from datetime import datetime
 
 ### logs 
 
-def reguistrar_log(mensaje):
+def registrar_log(mensaje):
     with open("sistema_reservas.log", "a") as log_file:
         log_file.write(f"{datetime.now()}: {mensaje}\n")
 
@@ -42,7 +42,7 @@ class Cliente(Entidad):      # CLASE CLIENTE
         self._nombre = nombre
 
     def set_email(self, email):
-        if "@" not in email:
+        if "@" not in email or "." not in email:
             raise ValueError("Email inválido")
         self._email = email
 
@@ -148,13 +148,20 @@ class Reserva:
             self._servicios = {}  # Diccionario para almacenar servicios por ID
             self._reservas = []  # Lista para almacenar reservas
 
-        def agregar_cliente(self, id, nombre, email): ### Método para agregar un cliente al sistema
-            if id in self._clientes:                  ### Verifica si el ID del cliente ya existe en el sistema
-                raise ClienteError("El cliente con este ID ya existe")   ## Si el ID ya existe, lanza una excepción personalizada ClienteError
-            cliente = Cliente(id, nombre, email)#### Crea una nueva instancia de Cliente con los datos proporcionados
-            self._clientes[id] = cliente  ### Agrega el cliente al diccionario de clientes usando su ID como clave
-            reguistrar_log(f"Cliente agregado: {cliente.mostrar_info()}")  # Log de cliente agregado
-
+        def agregar_cliente(self, id, nombre, email): # Método para agregar un cliente al sistema
+            try: # Intenta ejecutar el bloque de código
+                if id in self._clientes: # Verifica si el ID del cliente ya existe en el sistema
+                    raise ClienteError("El cliente con este ID ya existe") # Si el ID ya existe, lanza una excepción personalizada ClienteError
+                cliente = Cliente(id, nombre, email) # Crea una nueva instancia de Cliente con los datos proporcionados
+                self._clientes[id] = cliente       # Agrega el cliente al diccionario de clientes usando su ID como clave
+                registrar_log(f"Cliente agregado: {cliente.mostrar_info()}")  # Registra en el archivo log el cliente agregado
+                return "Cliente agregado correctamente" # Retorna un mensaje de confirmación
+            except (ClienteError, ValueError) as e: # Captura errores personalizados y errores de validación
+                registrar_log(f"Error al agregar cliente: {e}") # Guarda el error en el archivo log
+                return str(e) # Retorna el mensaje del error
+            finally:
+                print("Proceso de registro de cliente finalizado") # Mensaje final del proceso independientemente del resultado
+        
         def agregar_servicio(self, id, nombre, tarifa_base, tipo): ### Método para agregar un servicio al sistema
             if id in self._servicios:   ### Verifica si el ID del servicio ya existe en el sistema
                 raise ServicioError("El servicio con este ID ya existe") ### Si el ID ya existe, lanza una excepción personalizada ServicioError
@@ -167,7 +174,7 @@ class Reserva:
             else:
                 raise ValueError("Tipo de servicio inválido")    ### Si el tipo de servicio no coincide con ninguno de los casos anteriores, lanza una excepción indicando que el tipo de servicio es inválido
             self._servicios[id] = servicio  ####    Agrega el servicio al diccionario de servicios usando su ID como clave
-            reguistrar_log(f"Servicio agregado: {servicio.descripcion()} - Tarifa Base: ${tarifa_base:.2f}")  # Log de servicio agregado
+            registrar_log(f"Servicio agregado: {servicio.descripcion()} - Tarifa Base: ${tarifa_base:.2f}")  # Log de servicio agregado
 
             self . reservas = []  # Lista para almacenar reservas
             self.crear_widgets(self)  # Método para crear la interfaz gráfica 
@@ -178,11 +185,11 @@ class Reserva:
             pass  # Aquí se implementaría la creación de la interfaz gráfica usando Tkinter o PyQt5
 
         # cliente
-        tk.label (self.root, text="ID Cliente:").grid(row=0, column=0)
+        tk.Label (self.root, text="ID Cliente:").grid(row=0, column=0)
         self.nombre_cliente_entry = tk.Entry(self.root)
         self.nombre_cliente_entry.grid(row=0, column=1)
 
-        tk.label(self.root, text="Email Cliente:").grid(row=1, column=0)
+        tk.Label(self.root, text="Email Cliente:").grid(row=1, column=0)
         self.email_cliente_entry = tk.Entry(self.root)
         self.email_cliente_entry.grid(row=1, column=1)
 

@@ -16,5 +16,16 @@ Y en el desarrollo se aplicaron:
 - Encapsulación
 - Manejo de excepciones (try, except, else, finally)
 
+# Tecnologías utilizadas
+Se utilizaron tecnologias como: 
+- Python 3
+- Programación Orientada a Objetos (POO)
+- Manejo de archivos
+- Git y GitHub
+
+## Ejecución del proyecto
+
+Para ejecutar el sistema:
+
 ```bash
 python tarea4.py

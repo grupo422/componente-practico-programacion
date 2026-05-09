@@ -12,7 +12,7 @@ def registrar_log(mensaje):
     
 
 class Entidad(ABC):   # clase abstracta
-    def _init_(self, id):
+    def __init__(self, id):
         self._id = id            # crea el ID 
         self._fecha_creacion = datetime.now() # crea la fecha
 
@@ -35,8 +35,8 @@ class ServicioError(sistemaError):pass
 ## clases abstractas y concretas para el sistema de reservas de servicios###
 class Cliente(Entidad): # clase cliente
 
-    def _init_(self, id, nombre, email):
-        super()._init_(id)
+    def __init__(self, id, nombre, email):
+        super().__init__(id)
         self.set_nombre(nombre)
         self.set_email(email)
 
@@ -64,8 +64,8 @@ class Cliente(Entidad): # clase cliente
 
 class Servicio(Entidad): # CLASE ABSTRACTA SERVICIO
 
-    def _init_(self, id, nombre, tarifa_base):
-        super()._init_(id)
+    def __init__(self, id, nombre, tarifa_base):
+        super().__init__(id)
         self._nombre = nombre
         self._tarifa_base = tarifa_base
 
@@ -107,7 +107,7 @@ class Asesoria(Servicio): # Clase Asesoria que hereda de Servicio
 ### Clase Reserva que maneja las reservas de servicios ###
 class Reserva:
 
-    def _init_(self, cliente, servicio, duracion_horas):
+    def __init__(self, cliente, servicio, duracion_horas):
         if duracion_horas <= 0:
             raise ValueError("La duración debe ser mayor a cero")
 
@@ -167,9 +167,9 @@ class Reserva:
 
 
 ## Clase principal del sistema de reservas ###
-class app:
+class App:
 
-    def _init_(self):
+    def __init__(self):
         self._clientes = {} # Diccionario para almacenar clientes por ID
         self._servicios = {} # Diccionario para almacenar servicios por ID
         self._reservas = [] # Lista para almacenar reservas
@@ -236,9 +236,9 @@ class app:
 # simulacion sistema
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
 
-    sistema = app()
+    sistema = App()
 
     # Registro de clientes (correcto e incorrecto)
     print(sistema.agregar_cliente(1, "Oscar", "oscar@gmail.com"))
@@ -265,7 +265,7 @@ if _name_ == "_main_":
 
 
 class InterfazApp:
-    def _init_(self, sistema):
+    def __init__(self, sistema):
         self.sistema = sistema
 
         # Ventana principal
@@ -377,8 +377,7 @@ class InterfazApp:
 
 # integrar el sistema 
 
-if _name_ == "_main_":
-    sistema = app()
+if __name__ == "__main__":
+    sistema = App()
     interfaz = InterfazApp(sistema)
     interfaz.ejecutar()
-
